@@ -1,7 +1,7 @@
 # docker-scip
 
 Building a docker container with the SCIP Optimization Suite (v7.0.2) + Solving optimization
-problem (0-1 knapsack problem) with PySCIPOpt inside the container.
+(0-1 knapsack problem) with PySCIPOpt inside the container.
 
 ## Build docker
 
