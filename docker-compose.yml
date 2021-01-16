@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  scip:
+    image: scip:v0.1
+    container_name: scip
+#    user: user
+    build:
+      context: .
+      dockerfile: Dockerfile
