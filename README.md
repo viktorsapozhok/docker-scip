@@ -16,7 +16,7 @@ it's 7.0.2 version. SCIP is distributed under the Academic License, and you can 
 
 Note, that you need to download deb installer. Copy it to the root directory (where the Dockerfile is located).
 
-Then to build a docker image, you can just use `docker-compose`:
+Then to build a docker image, you can use `docker-compose`:
 
 ```shell
 $ docker-compose build
@@ -30,7 +30,7 @@ REPOSITORY          TAG                 IMAGE ID            CREATED             
 scip                v0.1                78791bbde634        14 hours ago        519MB
 ```
 
-## Running SCIP solver inside docker
+## Packing knapsack
 
 To demonstrate how to use PySCIPOpt, we show how to solve a small-scale 
 [knapsack problem](https://en.wikipedia.org/wiki/Knapsack_problem) for the case of multiple knapsacks.
@@ -83,18 +83,98 @@ for _item in items:
         x[_item.index, _bin.index] = model.addVar(vtype="B")
 ```
 
-Now we add the constraints which prevent the situations when the same item is packed into multiple bins:
+Now we add the constraints which prevent the situations when the same item is packed into multiple bins.
+It says that each item can be placed in at most one bin.
 
 ```python
 for _item in items:
     model.addCons(quicksum(x[_item.index, _bin.index] for _bin in bins) <= 1)
 ```
 
-And the constraints which limit the maximum weight packed into each bin:
+The following constraints require that the total weight packed in each knapsack don't exceed its maximum capacity.
 
 ```python
 for _bin in bins:
-    model.addCons(quicksum(_item.weight * x[_item.index, _bin.index] for _item in items) <= _bin.capacity)
+    model.addCons(
+        quicksum(
+            _item.weight * x[_item.index, _bin.index] for _item in items
+        ) <= _bin.capacity)
+```
+
+Finally, we define an objective function as a total value of the packed items and run optimization.
+
+```python
+model.setObjective(
+    quicksum(
+        _item.value * x[_item.index, _bin.index]
+        for _item in items for _bin in bins
+    ), 
+    sense="maximize")
+
+model.optimize()
+```
+
+See script `knapsack.py` for more details.
+
+## Running SCIP solver inside docker
+
+We copy script `knapsack.py` to `/home/user/scripts` directory inside the container when building an image:
+
+```dockerfile
+RUN mkdir /home/user/scripts
+ADD knapsack.py /home/user/scripts
+```
+
+To launch the script, we start the container in the detached mode:
+
+```shell
+$ docker-compose up -d
+```
+
+And running the optimization script, we get the following output:
+
+```shell
+$ docker exec -it scip python scripts/knapsack.py
+...
+Bin 1
+Item 6: weight 48, value 30
+Item 13: weight 42, value 20
+Packed bin weight: 90
+Packed bin value : 50
+
+Bin 2
+Item 3: weight 42, value 25
+Item 8: weight 42, value 40
+Packed bin weight: 84
+Packed bin value : 65
+
+Bin 3
+Item 4: weight 36, value 50
+Item 5: weight 36, value 35
+Item 10: weight 24, value 35
+Packed bin weight: 96
+Packed bin value : 120
+
+Bin 4
+Item 2: weight 30, value 30
+Item 11: weight 30, value 45
+Item 14: weight 36, value 30
+Packed bin weight: 96
+Packed bin value : 105
+
+Bin 5
+Item 9: weight 36, value 30
+Item 15: weight 36, value 25
+Packed bin weight: 72
+Packed bin value : 55
+
+Total packed value: 395.0
+```
+
+To stop the running container, use `down` command:
+
+```shell
+docker-compose down
 ```
 
 ## Reference
