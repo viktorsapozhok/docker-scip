@@ -3,13 +3,13 @@
 Building a docker container with the SCIP Optimization Suite (v7.0.2) + Solving optimization
 (0-1 knapsack problem) with PySCIPOpt inside the container.
 
-## Why choose SCIP?
+## Why to choose SCIP
 
 SCIP is currently one of the fastest non-commercial solvers for mixed integer programming (MIP) and
 mixed integer nonlinear programming (MINLP). It's still regularly updated with several releases during a year. 
 In addition, it provides an easy-to-use Python API to the SCIP optimization software (PySCIPOpt). 
 
-## How to build docker?
+## How to build docker
 
 Before building a container, you need to download the latest version of the SCIP Optimization Suite, currently 
 it's 7.0.2 version. SCIP is distributed under the Academic License, and you can download it from the [official website](https://www.scipopt.org/index.php#download).
