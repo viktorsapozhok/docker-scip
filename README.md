@@ -16,13 +16,13 @@ it's 7.0.2 version. SCIP is distributed under the Academic License, and you can 
 
 Note, that you need to download deb installer. Copy it to the root directory (where the Dockerfile is located).
 
-Then to build a docker image, you can use `docker-compose`:
+Then to build a docker image, you can issue `docker-compose` from the root directory:
 
 ```shell
 $ docker-compose build
 ```
 
-When building is over, you can see the new image.
+When building process is over, you can see the new image.
 
 ```shell
 $ docker images
@@ -35,7 +35,7 @@ scip                v0.1                78791bbde634        14 hours ago        
 To demonstrate how to use PySCIPOpt, we show how to solve a small-scale 
 [knapsack problem](https://en.wikipedia.org/wiki/Knapsack_problem) for the case of multiple knapsacks.
 
-Let's assume that we have a collection of items having different weights and values, and we want to
+Let's assume, that we have a collection of items with different weights and values, and we want to
 pack a subset of items into five knapsacks (bins), where each knapsack has a maximum capacity 100, so the 
 total packed value is a maximum.
 
@@ -101,7 +101,7 @@ for _bin in bins:
         ) <= _bin.capacity)
 ```
 
-Finally, we define an objective function as a total value of the packed items and run optimization.
+Finally, we define an objective function as a total value of the packed items and run the optimization.
 
 ```python
 model.setObjective(
@@ -131,7 +131,8 @@ To launch the script, we start the container in the detached mode:
 $ docker-compose up -d
 ```
 
-And running the optimization script, we get the following output:
+To run the script inside the container, we use `docker exec` command.
+The optimization displays the following output:
 
 ```shell
 $ docker exec -it scip python scripts/knapsack.py
