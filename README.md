@@ -25,7 +25,7 @@ Then to build a docker image, you can just use `docker-compose`:
 When building is over, you can see the new image.
 
 ```shell
-    $ docker images                                                                                                                                                                  ✔  base Py  11:28:35 
+    $ docker images
     REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
     scip                v0.1                78791bbde634        14 hours ago        519MB
 ```
