@@ -19,15 +19,15 @@ Note, that you need to download deb installer. Copy it to the root directory (wh
 Then to build a docker image, you can just use `docker-compose`:
 
 ```shell
-    $ docker-compose build
+$ docker-compose build
 ```
 
 When building is over, you can see the new image.
 
 ```shell
-    $ docker images
-    REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-    scip                v0.1                78791bbde634        14 hours ago        519MB
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+scip                v0.1                78791bbde634        14 hours ago        519MB
 ```
 
 ## Running SCIP solver inside docker
@@ -69,9 +69,32 @@ bins = [Bin(1, 100), Bin(2, 100), Bin(3, 100), Bin(4, 100), Bin(5, 100)]
 As a next step, we create a solver instance.
 
 ```python
-from pyscipopt import Model
+from pyscipopt import Model, quicksum
 
 model = Model()
+```
+
+We introduce the binary variables `x[i, j]` indicating that item `i` is packed into bin `j`.
+
+```python
+x = dict()
+for _item in items:
+    for _bin in bins:
+        x[_item.index, _bin.index] = model.addVar(vtype="B")
+```
+
+Now we add the constraints which prevent the situations when the same item is packed into multiple bins:
+
+```python
+for _item in items:
+    model.addCons(quicksum(x[_item.index, _bin.index] for _bin in bins) <= 1)
+```
+
+And the constraints which limit the maximum weight packed into each bin:
+
+```python
+for _bin in bins:
+    model.addCons(quicksum(_item.weight * x[_item.index, _bin.index] for _item in items) <= _bin.capacity)
 ```
 
 ## Reference
