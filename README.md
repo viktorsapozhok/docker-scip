@@ -32,7 +32,47 @@ When building is over, you can see the new image.
 
 ## Running SCIP solver inside docker
 
-To demonstrate how to use PySCIPOpt, we show how to solve a small-scale knapsack problem for the case of multiple knapsacks.
+To demonstrate how to use PySCIPOpt, we show how to solve a small-scale 
+[knapsack problem](https://en.wikipedia.org/wiki/Knapsack_problem) for the case of multiple knapsacks.
+
+Let's assume that we have a collection of items having different weights and values, and we want to
+pack a subset of items into five knapsacks (bins), where each knapsack has a maximum capacity 100, so the 
+total packed value is a maximum.
+
+Define a simple container class to store item parameters and initialize 15 items.
+
+```python
+class Item:
+    def __init__(self, index, weight, value):
+        self.index = index
+        self.weight = weight
+        self.value = value
+
+items = [
+    Item(1, 48, 10), Item(2, 30, 30), Item(3, 42, 25), Item(4, 36, 50), Item(5, 36, 35), 
+    Item(6, 48, 30), Item(7, 42, 15), Item(8, 42, 40), Item(9, 36, 30), Item(10, 24, 35), 
+    Item(11, 30, 45), Item(12, 30, 10), Item(13, 42, 20), Item(14, 36, 30), Item(15, 36, 25)
+]
+```
+
+Introduce bins (knapsacks) in the similar fashion.
+
+```python
+class Bin:
+    def __init__(self, index, capacity):
+        self.index = index
+        self.capacity = capacity
+
+bins = [Bin(1, 100), Bin(2, 100), Bin(3, 100), Bin(4, 100), Bin(5, 100)]
+```
+
+As a next step, we create a solver instance.
+
+```python
+from pyscipopt import Model
+
+model = Model()
+```
 
 ## Reference
 
