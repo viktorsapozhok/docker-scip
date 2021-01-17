@@ -26,6 +26,10 @@ RUN groupadd --gid 1000 user \
     && useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash user \
     && chown -R "1000:1000" /home/user
 
+# move script inside the container
+RUN mkdir /home/user/scripts
+ADD knapsack.py /home/user/scripts
+
 USER user
 
 # install scip python api
