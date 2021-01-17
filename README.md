@@ -6,7 +6,7 @@ Building a docker container with the SCIP Optimization Suite (v7.0.2) + Solving 
 ## Why to choose SCIP
 
 SCIP is currently one of the fastest non-commercial solvers for mixed integer programming (MIP) and
-mixed integer nonlinear programming (MINLP). It's still regularly updated with several releases during a year. 
+mixed integer nonlinear programming (MINLP). It's regularly updated releasing a new version several times a year. 
 In addition, it provides an easy-to-use Python API to the SCIP optimization software (PySCIPOpt). 
 
 ## How to build docker
@@ -31,6 +31,8 @@ When building is over, you can see the new image.
 ```
 
 ## Running SCIP solver inside docker
+
+To demonstrate how to use PySCIPOpt, we show how to solve a small-scale knapsack problem for the case of multiple knapsacks.
 
 ## Reference
 

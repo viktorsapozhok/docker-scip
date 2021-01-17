@@ -2,45 +2,75 @@ from pyscipopt import Model, quicksum
 
 
 class Item:
-    def __init__(self, name, value, weight):
-        self.name = name
-        self.value = value
+    def __init__(self, index, weight, value):
+        self.index = index
         self.weight = weight
+        self.value = value
 
     def __repr__(self):
-        return f"Item '{self.name}' (weight {self.weight})"
+        return f"Item {self.index}: weight {self.weight}, value {self.value}"
+
+
+class Bin:
+    def __init__(self, index, capacity):
+        self.index = index
+        self.capacity = capacity
+
+    def __repr__(self):
+        return f"Bin {self.index}"
 
 
 if __name__ == "__main__":
-    # maximum weight capacity to be included in knapsack
-    max_weight = 67
-    # list of all items
     items = [
-        Item("A", 505, 23), Item("B", 352, 26), Item("C", 458, 20),
-        Item("D", 220, 18), Item("E", 354, 32), Item("F", 414, 27),
-        Item("G", 498, 29), Item("H", 545, 26), Item("I", 473, 30),
-        Item("J", 543, 27)
+        Item(1, 48, 10), Item(2, 30, 30), Item(3, 42, 25),
+        Item(4, 36, 50), Item(5, 36, 35), Item(6, 48, 30),
+        Item(7, 42, 15), Item(8, 42, 40), Item(9, 36, 30),
+        Item(10, 24, 35), Item(11, 30, 45), Item(12, 30, 10),
+        Item(13, 42, 20), Item(14, 36, 30), Item(15, 36, 25)
+    ]
+
+    bins = [
+        Bin(1, 100), Bin(2, 100), Bin(3, 100), Bin(4, 100), Bin(5, 100)
     ]
 
     model = Model()
-
-    # init variables
     x = dict()
-    for item in items:
-        x[item.name] = model.addVar(vtype="B")
 
-    model.addCons(
-        quicksum(item.weight * x[item.name] for item in items) <= max_weight)
+    for _item in items:
+        for _bin in bins:
+            x[_item.index, _bin.index] = model.addVar(vtype="B")
+
+    for _item in items:
+        model.addCons(
+            quicksum(x[_item.index, _bin.index] for _bin in bins) <= 1)
+
+    for _bin in bins:
+        model.addCons(
+            quicksum(
+                _item.weight * x[_item.index, _bin.index] for _item in items
+            ) <= _bin.capacity)
 
     model.setObjective(
-        quicksum(item.value * x[item.name] for item in items),
+        quicksum(
+            _item.value * x[_item.index, _bin.index]
+            for _item in items for _bin in bins
+        ),
         sense="maximize")
 
     model.optimize()
+    print("\n")
 
-    print("\nsolution:")
-    for item in items:
-        if model.getVal(x[item.name]) > 0.5:
-            print(str(item) + " in knapsack")
-        else:
-            print(str(item))
+    for _bin in bins:
+        bin_weight = 0
+        bin_value = 0
+        print(_bin)
+        for _item in items:
+            if model.getVal(x[_item.index, _bin.index]) > 0.5:
+                bin_weight += _item.weight
+                bin_value += _item.value
+                print(_item)
+
+        print(f"Packed bin weight: {bin_weight}")
+        print(f"Packed bin value : {bin_value}\n")
+
+    print(f"Total packed value: {model.getObjVal():.1f}\n")
