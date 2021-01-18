@@ -3,7 +3,7 @@ FROM python:3.9-slim
 # install compilers and scip deps
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        build-essential \
+	    build-essential \
         libgfortran4 \
         libcliquer1 \
         libopenblas-dev \
