@@ -178,8 +178,6 @@ To stop the running container, use `down` command:
 docker-compose down
 ```
 
-## Reference
+Read the [tutorial][1] for more.
 
-* [PySCIPOpt: Mathematical Programming in Python with the SCIP Optimization Suite](https://github.com/scipopt/PySCIPOpt)
-* [SCIP Optimization Suite](https://www.scipopt.org/)
-* [How to install PySCIPOpt in a docker container](https://viktorsapozhok.github.io/docker-scip-pyscipopt/)
+[1]: https://viktorsapozhok.github.io/docker-scip-pyscipopt/ "How to install PySCIPOpt in a docker container"
